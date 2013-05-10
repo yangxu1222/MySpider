@@ -17,9 +17,9 @@ import org.htmlparser.util.ParserException;
 
 import com.jlu.yangxu.newsspider.page.FileDownLoader;
 import com.jlu.yangxu.newsspider.page.PictureDownloader;
+import com.jlu.yangxu.newsspider.util.ConfigUtil;
 
 public class DetailPageParser extends PageParser {
-	private static int count =0;
 	public DetailPageParser() {
 		super();
 	}
@@ -63,6 +63,7 @@ public class DetailPageParser extends PageParser {
 			parser.setInputHTML(fdl.getContent());
 			parser.setEncoding(encoding);
 			NodeList nlist = parser.extractAllNodesThatMatch(new NodeClassFilter(LinkTag.class));// 查处了所有的link标签
+			int count = 0;
 			for (int i = 0; i < nlist.size(); i++) {
 				Node node = nlist.elementAt(i);
 				if (node instanceof LinkTag) {
@@ -80,6 +81,7 @@ public class DetailPageParser extends PageParser {
 					String[] subsUrl = fdl.getUrl().split("/");
 					String mobileBrandName = subsUrl[3];
 					String mobileBrandType = subsUrl[4];
+					//System.out.println(linkHref);
 					if (linkHref.contains("#8B1_")) {
 						Node child = ltag.getLastChild();
 						if(child instanceof ImageTag){
@@ -90,6 +92,14 @@ public class DetailPageParser extends PageParser {
 							count ++;
 						}
 					}
+					if(linkHref.contains("param.html#8B2")){
+						linkHref = "http://product.mobile.163.com" +"/" + mobileBrandName +"/" + mobileBrandType +"/" + linkHref;
+						//System.out.println(linkHref);
+						String fileName = mobileBrandName+"_"+mobileBrandType;
+						String dir = ConfigUtil.getProperty("CACHE_PRAMA_PATH");
+						FileDownLoader fileDownLoader = new FileDownLoader(linkHref);
+						fileDownLoader.downloadFile(fileName,dir);
+					}
 
 				}
 			}
@@ -97,6 +107,7 @@ public class DetailPageParser extends PageParser {
 			pe.printStackTrace();
 		}
 	}
+		
 
 	/**
 	 * 继承自父类<code>PageParser</code>。 如果是detail页则不需要校验深度值<code>depth</code>。

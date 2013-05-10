@@ -74,9 +74,6 @@ public class Spider {
 		print("Ïß³ÌÊı£º" + threadCount);
 		List<Thread> threadList = new ArrayList<Thread>(threadCount);
 		for (int i = 0; i < threadCount; i++) {
-			// Thread t = new Thread(new PageIterator(collector, parser,
-			// lparser,
-			// dparser, listUrlStart, detailUrlPattern));
 			Thread t = new Thread(new PageIterator(collector, parser, lparser,
 					dparser,biparser,pparser, listUrlPattern, detailUrlPattern,
 					brandIndexPattern, picturePattern));

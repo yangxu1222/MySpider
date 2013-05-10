@@ -67,33 +67,15 @@ public class ListPageParser extends PageParser {
 				if (node instanceof LinkTag) {
 					LinkTag ltag = (LinkTag) node;
 					String linkHref = ltag.getLink().trim();
-					// String linkText = ltag.getLinkText().trim();
-					// print(linkText);
-					// Pattern pattern = Pattern.compile("./\\d*?.html#result");
-
-					// try {
-					// linkHref = formatUrl(fdl.getUrl(), linkHref);
-					// linkHref = "http://product.mobile.163.com"+linkHref;
-					// System.out.println(linkHref);
-					// if (checkUrl(linkHref)) {
 					String regex = mobileBrandName + "/.*?/#B\\d{2}?";
-					// System.out.println(regex);
 					if (Pattern.matches(regex, linkHref)
 							|| Pattern.matches("./\\d*?.html#result", linkHref)) {
 						if (Pattern.matches("./\\d*?.html#result", linkHref)) {
-							// System.out.println("save list:"+ linkHref);
 							linkHref = linkHref.substring(1);
 							linkHref = mobileBrandName + linkHref;
 						}
-
-						// System.out.println("list: "+linkHref);
-						// saveUrl(linkHref, nextDepth);
-						// System.out.println("save product:" + linkHref);
+						 saveUrl(linkHref, nextDepth);
 					}
-					// }
-					// } catch (Exception e) {
-					// System.err.println("Error when format " + linkHref);
-					// }
 
 				}
 			}
