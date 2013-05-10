@@ -28,14 +28,15 @@ public class BrandIndexPageParser extends PageParser {
 	 * @throws IOException 
 	 */
 	public void extractPage(String url, Integer depth,String dir) {
-		System.out.println("parse BrandPage: " + url + "  depth : " + depth);
+
+		logger.info("parse BrandPage: " + url + "  depth : " + depth);
+		//System.out.println("parse BrandPage: " + url + "  depth : " + depth);
 		
 		FileDownLoader fdl = getPageContent(url,dir);
-		// extract content
-		//System.out.println("extract content : " + url);
+
 		
 		extractLinks(fdl, depth, fdl.getEncoding());
-		//collector.addDealedLink(url, String.valueOf(depth));
+		collector.addDealedLink(url, String.valueOf(depth));
 		fdl = null;
 	}
 	
@@ -70,32 +71,17 @@ public class BrandIndexPageParser extends PageParser {
 				if (node instanceof LinkTag) {
 					LinkTag ltag = (LinkTag) node;
 					String linkHref = ltag.getLink().trim();
-					// String linkText = ltag.getLinkText().trim();
-					// print(linkText);
-					// Pattern pattern = Pattern.compile("./\\d*?.html#result");
-
-				//	try {
-						//linkHref = formatUrl(fdl.getUrl(), linkHref);
-						//linkHref = "http://product.mobile.163.com"+linkHref;
-						//System.out.println(linkHref);
-					//	if (checkUrl(linkHref)) {
+					
 						String regex = mobileBrandName + "/.*?/#B\\d{2}?";
-						//System.out.println(mobileBrandName);
 						if (Pattern.matches("./\\d*?.html#result", linkHref) || Pattern.matches(regex, linkHref)){
 							if(Pattern.matches("./\\d*?.html#result", linkHref)){
-								//System.out.println("save list:"+ linkHref);
 								linkHref = linkHref.substring(1);
 								linkHref =  mobileBrandName +linkHref;
 							}
-							//System.out.println("detail:" + linkHref);
+
 							saveUrl(linkHref, nextDepth);
 							
 						}
-					//	}
-				//	} catch (Exception e) {
-				//		System.err.println("Error when format " + linkHref);
-				//	}
-
 				}
 			}
 		} catch (ParserException pe) {
@@ -107,7 +93,7 @@ public class BrandIndexPageParser extends PageParser {
 		String url1 = "http://product.mobile.163.com/TSD/#7BA";
 		String url2 = "http://product.mobile.163.com/BlackBerry/#7BA";
 		Integer depth = 0;
-		String dir = "F:";
+		String dir = "e:";
 		bip.extractPage(url1, depth, dir);
 		System.out.println("finished");
 	}

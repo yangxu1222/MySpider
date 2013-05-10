@@ -26,13 +26,9 @@ public class PicturePageParser extends PageParser {
 	 * @throws IOException 
 	 */
 	public void extractPage(String url, Integer depth,String dir) {
-		System.out.println("parse : " + url + "  depth : " + depth);
+		logger.info("parse : " + url + "  depth : " + depth);
 		String mobileBrand = "/"+url.split("/")[3]+"/"+url.split("/")[4];
-		FileDownLoader fdl = getPageContent(url,dir);
-	
-		// extract content
-		System.out.println("extract content : " + url);
-		
+		FileDownLoader fdl = getPageContent(url,dir);		
 		extractLinks(fdl, depth, fdl.getEncoding(),mobileBrand);
 	}
 	
@@ -63,20 +59,14 @@ public class PicturePageParser extends PageParser {
 				if (node instanceof LinkTag) {
 					LinkTag ltag = (LinkTag) node;
 					String linkHref = ltag.getLink().trim();
-					// String linkText = ltag.getLinkText().trim();
-					// print(linkText);
-					// Pattern pattern = Pattern.compile("./\\d*?.html#result");
+
 
 					try {
-						//linkHref = formatUrl(fdl.getUrl(), linkHref);
-						//linkHref = "http://product.mobile.163.com"+linkHref;
-						//System.out.println(linkHref);
-					//	if (checkUrl(linkHref)) {
+	
 						if (linkHref == "img.html#8B3"){
 							linkHref = mobileBrand+linkHref;
 							saveUrl(linkHref, nextDepth);
 						}
-					//	}
 					} catch (Exception e) {
 						System.err.println("Error when format " + linkHref);
 					}

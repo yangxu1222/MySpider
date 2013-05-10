@@ -27,14 +27,10 @@ public class ListPageParser extends PageParser {
 	 * @throws IOException
 	 */
 	public void extractPage(String url, Integer depth, String dir) {
-		System.out.println("parse listPage: " + url + "  depth : " + depth);
+		logger.info("parse listPage: " + url + "  depth : " + depth);
 		FileDownLoader fdl = getPageContent(url, dir);
-
-		// extract content
-		// System.out.println("extract content : " + url);
-
 		extractLinks(fdl, depth, fdl.getEncoding());
-		// collector.addDealedLink(url, String.valueOf(depth));
+
 		fdl = null;
 	}
 

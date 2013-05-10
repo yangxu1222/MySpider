@@ -7,6 +7,9 @@ package com.jlu.yangxu.newsspider.parser;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 import java.util.regex.Pattern;
 
 import org.htmlparser.Node;
@@ -21,6 +24,7 @@ import com.jlu.yangxu.newsspider.page.PageLinkCollector;
 
 public class PageParser {
 
+	public static Logger logger = Logger.getLogger(PageParser.class.getName());
 	private String webDomain;
 	private boolean limitDomain = true;
 	private String protocol = "http";
@@ -28,13 +32,23 @@ public class PageParser {
 	private Integer maxDepth;
 
 	public PageParser() {
+		try {
+			FileHandler fileHandler = new FileHandler("E:/crawler/Logger.log");
+			fileHandler.setFormatter(new SimpleFormatter());
+			logger.addHandler(fileHandler);
+		} catch (SecurityException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 
 	}
 
 	public void extractPage(String url, Integer depth, String dir) {
-		if (!checkDepth(url, depth)) {
-			return;
-		}
+	//	if (!checkDepth(url, depth)) {
+	//		return;
+	//	}
+		logger.info("parse : " + url + "  depth : " + depth);
 		System.out.println("parse : " + url + "  depth : " + depth);
 
 		FileDownLoader fdl = getPageContent(url, dir);
@@ -75,13 +89,8 @@ public class PageParser {
 					String linkHref = ltag.getLink().trim();
 
 					if (Pattern.matches("/.*?/#7BA", linkHref)) {
-						// System.out.println("brand moblie: " + linkHref);
 						saveUrl(linkHref, nextDepth);
 					}
-					// }
-					// } catch (Exception e) {
-					// System.err.println("Error when format " + linkHref);
-					// }
 
 				}
 			}
@@ -276,7 +285,7 @@ public class PageParser {
 
 	public static void main(String[] args) {
 		PageParser pp = new PageParser();
-		pp.extractPage("http://product.mobile.163.com/", 0, "F:\\crawler\\temp");
-		System.out.println("finised!");
+		pp.extractPage("http://product.mobile.163.com/", 0, "e:\\");
+		logger.info("finished!");
 	}
 }

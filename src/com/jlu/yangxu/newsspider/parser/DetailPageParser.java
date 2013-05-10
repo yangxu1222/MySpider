@@ -30,14 +30,9 @@ public class DetailPageParser extends PageParser {
 	 * @throws IOException
 	 */
 	public void extractPage(String url, Integer depth, String dir) {
-		System.out.println("parse detailPage: " + url + "  depth : " + depth);
+		logger.info("parse detailPage: " + url + "  depth : " + depth);		
 		FileDownLoader fdl = getPageContent(url, dir);
-
-		// extract content
-		// System.out.println("detail not extract : " + url);
-
-		 extractLinks(fdl, depth, fdl.getEncoding());
-		//collector.addDealedLink(url, String.valueOf(depth));
+		extractLinks(fdl, depth, fdl.getEncoding());
 		fdl = null;
 	}
 
@@ -54,7 +49,6 @@ public class DetailPageParser extends PageParser {
 	 */
 	public void extractLinks(FileDownLoader fdl, Integer depth,
 			String encoding) {
-		//String nextDepth = String.valueOf(depth + 1);
 		try {
 			if (fdl.getContent() == null) {
 				return;
@@ -69,15 +63,6 @@ public class DetailPageParser extends PageParser {
 				if (node instanceof LinkTag) {
 					LinkTag ltag = (LinkTag) node;
 					String linkHref = ltag.getLink().trim();
-					// String linkText = ltag.getLinkText().trim();
-					// print(linkText);
-					// Pattern pattern = Pattern.compile("./\\d*?.html#result");
-
-					// try {
-					// linkHref = formatUrl(fdl.getUrl(), linkHref);
-					// linkHref = "http://product.mobile.163.com"+linkHref;
-					// System.out.println(linkHref);
-					// if (checkUrl(linkHref)) {
 					String[] subsUrl = fdl.getUrl().split("/");
 					String mobileBrandName = subsUrl[3];
 					String mobileBrandType = subsUrl[4];
@@ -94,7 +79,7 @@ public class DetailPageParser extends PageParser {
 					}
 					if(linkHref.contains("param.html#8B2")){
 						linkHref = "http://product.mobile.163.com" +"/" + mobileBrandName +"/" + mobileBrandType +"/" + linkHref;
-						//System.out.println(linkHref);
+
 						String fileName = mobileBrandName+"_"+mobileBrandType;
 						String dir = ConfigUtil.getProperty("CACHE_PRAMA_PATH");
 						FileDownLoader fileDownLoader = new FileDownLoader(linkHref);
@@ -120,7 +105,7 @@ public class DetailPageParser extends PageParser {
 		DetailPageParser parser = new DetailPageParser();
 		String url = "http://product.mobile.163.com/Samsung/000BMNBO/#B11";
 		Integer depth = 0;
-		String dir = "F:";
+		String dir = "e:";
 		parser.extractPage(url, depth, dir);
 		System.out.println("finished");
 	}

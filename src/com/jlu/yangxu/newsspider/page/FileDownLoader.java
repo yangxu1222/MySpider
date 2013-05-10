@@ -9,6 +9,9 @@ import static net.mindview.util.Print.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.Header;
@@ -24,7 +27,10 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import com.jlu.yangxu.newsspider.util.ConfigUtil;
 import com.jlu.yangxu.newsspider.util.URLUtil;
 
+
 public class FileDownLoader {
+	
+	private static Logger logger = Logger.getLogger(FileDownLoader.class.getName());
 	private String url;
 
 	private String fileName;
@@ -34,6 +40,14 @@ public class FileDownLoader {
 	private String content = null;
 	private static long count = 0;
 	public FileDownLoader(String url) {
+		try {
+			FileHandler fileHandler = new FileHandler("E:/crawler/Logger.log");
+			fileHandler.setFormatter(new SimpleFormatter());
+			logger.addHandler(fileHandler);
+		} catch (SecurityException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		this.url = url;
 	}
 
@@ -65,7 +79,8 @@ public class FileDownLoader {
 	 * @return
 	 */
 	public String downloadFile(String dir) {
-		print("downloading..." + url);
+		logger.info("downloading..." + url);
+		//print("downloading..." + url);
 		String filePath = null;
 		InputStream responseBody;
 		
@@ -171,7 +186,7 @@ public class FileDownLoader {
 	 * @return
 	 */
 	public String downloadFile(String fileName,String dir) {
-		print("downloading..." + url);
+		logger.info("downloading..." + url);
 		String filePath = null;
 		InputStream responseBody;
 		
