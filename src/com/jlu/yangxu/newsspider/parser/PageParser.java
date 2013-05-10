@@ -73,15 +73,7 @@ public class PageParser {
 				if (node instanceof LinkTag) {
 					LinkTag ltag = (LinkTag) node;
 					String linkHref = ltag.getLink().trim();
-					// String linkText = ltag.getLinkText().trim();
-					// print(linkText);
-					// Pattern pattern = Pattern.compile("./\\d*?.html#result");
 
-					// try {
-					// linkHref = formatUrl(fdl.getUrl(), linkHref);
-					// linkHref = "http://product.mobile.163.com"+linkHref;
-					// System.out.println(linkHref);
-					// if (checkUrl(linkHref)) {
 					if (Pattern.matches("/.*?/#7BA", linkHref)) {
 						// System.out.println("brand moblie: " + linkHref);
 						saveUrl(linkHref, nextDepth);
