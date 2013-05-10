@@ -6,9 +6,12 @@ package com.jlu.yangxu.newsspider.page;
 
 import java.util.regex.Pattern;
 
+import com.jlu.yangxu.newsspider.parser.BrandIndexPageParser;
 import com.jlu.yangxu.newsspider.parser.DetailPageParser;
 import com.jlu.yangxu.newsspider.parser.ListPageParser;
 import com.jlu.yangxu.newsspider.parser.PageParser;
+import com.jlu.yangxu.newsspider.parser.PicturePageParser;
+import com.jlu.yangxu.newsspider.util.ConfigUtil;
 
 public class PageIterator implements Runnable {
 	private PageLinkCollector collector;
@@ -18,23 +21,39 @@ public class PageIterator implements Runnable {
 	private ListPageParser lparser;
 
 	private DetailPageParser dparser;
+	
+	private BrandIndexPageParser biparser ;
+	
+	private PicturePageParser pparser;
 
 	private String listUrlStart;
 
 	private String detailUrlPattern;
 	
-	private String dir;
+	private String brandIndexPattern;
+	
+	private String picturePattern;
+	
+	private static String detailDir = ConfigUtil.getProperty("CACHE_DETAIL_FILE_PATH");
+	
+	private static String listDir = ConfigUtil.getProperty("CACHE_LIST_FILE_PATH");
 
 	public PageIterator(PageLinkCollector collector, PageParser parser,
 			ListPageParser lparser, DetailPageParser dparser,
-			String listUrlStart, String detailUrlPattern,String dir) {
+			BrandIndexPageParser biparser,PicturePageParser pparser,
+			String listUrlStart, String detailUrlPattern,
+			String brandIndexPattern,String picturePattern) {
 		this.collector = collector;
 		this.parser = parser;
 		this.lparser = lparser;
 		this.dparser = dparser;
+		this.pparser = pparser;
+		this.biparser = biparser;
 		this.listUrlStart = listUrlStart;
 		this.detailUrlPattern = detailUrlPattern;
-		this.dir = dir;
+		this.brandIndexPattern = brandIndexPattern;
+		this.picturePattern = picturePattern;
+		this.brandIndexPattern = brandIndexPattern;
 	}
 
 	@Override
@@ -43,13 +62,19 @@ public class PageIterator implements Runnable {
 		while ((toDealLink = collector.getNextToDeal()) != null) {
 			if (isDetailPage(toDealLink[0])) {
 				dparser.extractPage(toDealLink[0],
-						Integer.valueOf(toDealLink[1]),dir);
+						Integer.valueOf(toDealLink[1]),detailDir);
 			} else if (isListPage(toDealLink[0])) {
 				lparser.extractPage(toDealLink[0],
-						Integer.valueOf(toDealLink[1]),dir);
-			} else {
+						Integer.valueOf(toDealLink[1]),listDir);
+			} else if (isbrandIndexPage(toDealLink[0])){
+				biparser.extractPage(toDealLink[0],
+						Integer.valueOf(toDealLink[1]),listDir);
+			}else if (ispicturePage(toDealLink[0])){
+				pparser.extractPage(toDealLink[0],
+						Integer.valueOf(toDealLink[1]),listDir);
+			}else{
 				parser.extractPage(toDealLink[0],
-						Integer.valueOf(toDealLink[1]),dir);
+						Integer.valueOf(toDealLink[1]),listDir);
 			}
 
 		}
@@ -73,6 +98,24 @@ public class PageIterator implements Runnable {
 		return false;
 	}
 
+	public boolean isbrandIndexPage(String url) {
+		//if (url.startsWith(listUrlStart)) {
+	//		return true;
+		//}
+		if (Pattern.matches(brandIndexPattern, url)){
+			return true;
+		}
+		return false;
+	}
+	public boolean ispicturePage(String url) {
+		//if (url.startsWith(listUrlStart)) {
+	//		return true;
+		//}
+		if (Pattern.matches(picturePattern, url)){
+			return true;
+		}
+		return false;
+	}
 	public static void main(String[] args) {
 
 	}

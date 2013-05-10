@@ -127,7 +127,7 @@ public class FileDownLoader {
 			String fileName = String.valueOf(count++);
 			//filePath = ConfigUtil.getProperty("CSDN_CACHE_FILE_PATH") + fileName;
 			filePath = dir + fileName;
-			print(filePath);
+			//print(filePath);
 			String charset = getMethod.getResponseCharSet();
 
 			// saveToLocal(responseBody, filePath);//暂时不保存临时文件

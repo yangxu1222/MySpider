@@ -7,6 +7,7 @@ package com.jlu.yangxu.newsspider.parser;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.regex.Pattern;
 
 import org.htmlparser.Node;
 import org.htmlparser.Parser;
@@ -17,28 +18,30 @@ import org.htmlparser.util.ParserException;
 
 import com.jlu.yangxu.newsspider.page.FileDownLoader;
 import com.jlu.yangxu.newsspider.page.PageLinkCollector;
-import static net.mindview.util.Print.*;
+
 public class PageParser {
-	
+
 	private String webDomain;
 	private boolean limitDomain = true;
 	private String protocol = "http";
-	private PageLinkCollector collector;
+	protected PageLinkCollector collector;
 	private Integer maxDepth;
 
 	public PageParser() {
 
 	}
 
-	public void extractPage(String url, Integer depth,String dir) {
+	public void extractPage(String url, Integer depth, String dir) {
 		if (!checkDepth(url, depth)) {
 			return;
 		}
 		System.out.println("parse : " + url + "  depth : " + depth);
 
-		FileDownLoader fdl = getPageContent(url,dir);
+		FileDownLoader fdl = getPageContent(url, dir);
 
 		extractLinks(fdl, depth, fdl.getEncoding());
+
+		collector.addDealedLink(url, String.valueOf(depth));
 
 		fdl = null;
 	}
@@ -52,34 +55,42 @@ public class PageParser {
 	 *            深度值
 	 * @param encoding
 	 *            编码
-	 * @throws IOException 
+	 * @throws IOException
 	 */
-	public void extractLinks(FileDownLoader fdl, Integer depth, String encoding)  {
+	public void extractLinks(FileDownLoader fdl, Integer depth, String encoding) {
 		String nextDepth = String.valueOf(depth + 1);
 		try {
-			if(fdl.getContent() == null){
-				return ;
+			if (fdl.getContent() == null) {
+				return;
 			}
 			Parser parser = new Parser();
 			parser.setInputHTML(fdl.getContent());
 			parser.setEncoding(encoding);
-			NodeList nlist = parser.extractAllNodesThatMatch(
-					new NodeClassFilter(LinkTag.class));// 查处了所有的link标签
+			NodeList nlist = parser
+					.extractAllNodesThatMatch(new NodeClassFilter(LinkTag.class));// 查处了所有的link标签
 			for (int i = 0; i < nlist.size(); i++) {
 				Node node = nlist.elementAt(i);
 				if (node instanceof LinkTag) {
 					LinkTag ltag = (LinkTag) node;
 					String linkHref = ltag.getLink().trim();
 					// String linkText = ltag.getLinkText().trim();
-					//print(linkHref);
-					try {
-						linkHref = formatUrl(fdl.getUrl(), linkHref);
-						if (checkUrl(linkHref)) {
-							saveUrl(linkHref, nextDepth);
-						}
-					} catch (Exception e) {
-						System.err.println("Error when format " + linkHref);
+					// print(linkText);
+					// Pattern pattern = Pattern.compile("./\\d*?.html#result");
+
+					// try {
+					// linkHref = formatUrl(fdl.getUrl(), linkHref);
+					// linkHref = "http://product.mobile.163.com"+linkHref;
+					// System.out.println(linkHref);
+					// if (checkUrl(linkHref)) {
+					if (Pattern.matches("/.*?/#7BA", linkHref)) {
+						// System.out.println("brand moblie: " + linkHref);
+						saveUrl(linkHref, nextDepth);
 					}
+					// }
+					// } catch (Exception e) {
+					// System.err.println("Error when format " + linkHref);
+					// }
+
 				}
 			}
 		} catch (ParserException pe) {
@@ -94,7 +105,7 @@ public class PageParser {
 	 * @return 含有网页信息的类
 	 * @see FileDownLoader
 	 */
-	public FileDownLoader getPageContent(String url,String dir) {
+	public FileDownLoader getPageContent(String url, String dir) {
 		FileDownLoader fdl = new FileDownLoader(url);
 		fdl.downloadFile(dir);
 		return fdl;
@@ -129,7 +140,7 @@ public class PageParser {
 			return false;
 		}
 
-		//linkHref = removeJsessionId(linkHref);
+		// linkHref = removeJsessionId(linkHref);
 		// 这里只考虑抓取http协议
 		if (!linkHref.startsWith(protocol + "://")) {
 			return false;
@@ -205,7 +216,7 @@ public class PageParser {
 	 * @param linkHref
 	 * @param nextDepth
 	 */
-	private void saveUrl(String linkHref, String nextDepth) {
+	protected void saveUrl(String linkHref, String nextDepth) {
 		collector.add(linkHref, nextDepth);
 	}
 
@@ -271,4 +282,9 @@ public class PageParser {
 		this.maxDepth = maxDepth;
 	}
 
+	public static void main(String[] args) {
+		PageParser pp = new PageParser();
+		pp.extractPage("http://product.mobile.163.com/", 0, "F:\\crawler\\temp");
+		System.out.println("finised!");
+	}
 }
