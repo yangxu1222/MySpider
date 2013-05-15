@@ -5,15 +5,11 @@
 package com.jlu.yangxu.page;
 
 import java.io.UnsupportedEncodingException;
-import java.util.logging.Logger;
-import java.util.regex.Pattern;
-
 import com.jlu.yangxu.db.BerkeleyDBDao;
-import com.jlu.yangxu.util.Funcs;
 import com.sleepycat.je.DatabaseException;
+import static com.jlu.yangxu.util.Funcs.logger;
 
 public class PageLinkCollector {
-	public static Logger logger = Funcs.getLogger();
 	private BerkeleyDBDao dao = new BerkeleyDBDao();
 	private String toDealDBName;
 	private String dealedDBName;
@@ -28,53 +24,20 @@ public class PageLinkCollector {
 		this.dao = dao;
 	}
 
-	/**
-	 * 保存一个待处理的链接信息。
-	 * 
-	 * @param key
-	 * @param data
-	 */
-	public synchronized void add(String key, String data) {
-
-		key = "http://product.mobile.163.com" + key;
-		logger.info("toDeal:" + key);
-		// if (key.contains("#B21") || Pattern.matches("./\\d*?.html#result",
-		// key)) {
-
-		// if (key.contains("#B21")) {
-		// key = "http://product.mobile.163.com" + key;
-		// }
-		// if (Pattern.matches("./\\d*?.html#result", key)) {
-		// key = "http://product.mobile.163.com/Samsung"
-		// + key.substring(1);
-		// }
-		try {
-			if (!dao.isRecordExist(toDealDBName, key, data)
-					&& !dao.isRecordExist(dealedDBName, key, data)) {
-				dao.saveUrl(toDealDBName, key, data);
-				//System.out.println("toDealDBName:" + key);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		// }
-	}
-
 	/***
 	 * 保存一个待处理的连接信息
 	 * 
 	 * @param key
 	 * @param data
 	 */
-	public synchronized void addToDealLink(String key, String data) {
-		key = "http://product.mobile.163.com" + key;
-		logger.info("toDeal:" + key);
-		try {
-			
+	public synchronized void addToDealLink(String key, String data) {		
+		
+		try {		
 			// 如果此连接不在待处理连接数据库中，同时也不在已处理数据库中 则加入到待处理数据库中
 			if (!dao.isRecordExist(toDealDBName, key, data)
 					&& !dao.isRecordExist(dealedDBName, key, data)) {
 				dao.saveUrl(toDealDBName, key, data);
+				logger.info("toDeal:" + key);
 			}
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
@@ -93,6 +56,7 @@ public class PageLinkCollector {
 		try {
 			if (!dao.isRecordExist(dealedDBName, key, data)) {
 				dao.saveUrl(dealedDBName, key, data);
+				logger.info("toDealed:" + key);
 			}
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
@@ -114,7 +78,9 @@ public class PageLinkCollector {
 			if (result != null) {
 				dao.delete(toDealDBName, result[0]);
 				dao.saveUrl(dealedDBName, result[0], result[1]);
+				logger.info("getNextUrl:" + result[0]);
 			}
+			
 			return result;
 		} catch (UnsupportedEncodingException | DatabaseException e) {
 			e.printStackTrace();

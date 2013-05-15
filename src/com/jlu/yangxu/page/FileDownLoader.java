@@ -39,6 +39,8 @@ public class FileDownLoader {
 	private String encoding;
 
 	private String content = null;
+	private static long detailCount = 0;
+	private static long listCount = 0;
 	private static long count = 0;
 	public FileDownLoader(String url) {
 		this.url = url;
@@ -121,17 +123,10 @@ public class FileDownLoader {
 			}
 			/* 4.处理 HTTP 响应内容 */
 			responseBody = getMethod.getResponseBodyAsStream();// 读取为字节数组
-			// content = Funcs.getContent(responseBody);
-			// 根据网页 url 生成保存时的文件名
-			//String fileName = getFileNameByUrl(url, getMethod
-			//		.getResponseHeader("Content-Type").getValue());
 			String fileName = String.valueOf(count++);
-			//filePath = ConfigUtil.getProperty("CSDN_CACHE_FILE_PATH") + fileName;
 			filePath = dir + fileName;
-			//print(filePath);
 			String charset = getMethod.getResponseCharSet();
 
-			// saveToLocal(responseBody, filePath);//暂时不保存临时文件
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
 					responseBody, charset));
 			OutputStreamWriter writer = new OutputStreamWriter(
@@ -227,14 +222,16 @@ public class FileDownLoader {
 			}
 			/* 4.处理 HTTP 响应内容 */
 			responseBody = getMethod.getResponseBodyAsStream();// 读取为字节数组
-			// content = Funcs.getContent(responseBody);
-			// 根据网页 url 生成保存时的文件名
-			//String fileName = getFileNameByUrl(url, getMethod
-			//		.getResponseHeader("Content-Type").getValue());
-			//String fileName = String.valueOf(count++);
-			//filePath = ConfigUtil.getProperty("CSDN_CACHE_FILE_PATH") + fileName;
-			filePath = dir + fileName;
-			//print(filePath);
+			if(fileName=="detail"){
+				filePath = dir + fileName + detailCount;
+				detailCount++;
+			}
+			if(fileName == "list"){
+				filePath = dir + fileName + listCount;
+				listCount++;
+			}
+			
+			
 			String charset = getMethod.getResponseCharSet();
 
 			// saveToLocal(responseBody, filePath);//暂时不保存临时文件

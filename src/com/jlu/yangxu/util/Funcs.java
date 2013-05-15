@@ -9,10 +9,10 @@ import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import com.jlu.yangxu.Spider;
+import com.jlu.yangxu.Crawler;
 
 public class Funcs {
-	
+	public static Logger logger = getLogger();
 	/**
 	 * 将InputStream 转化为String
 	 * @param in
@@ -42,7 +42,7 @@ public class Funcs {
 	 * @throws IOException
 	 */
 	public static Logger getLogger(){
-		Logger logger = Logger.getLogger(Spider.class.getName());
+		Logger logger = Logger.getLogger(Crawler.class.getName());
 		FileHandler fileHandler;
 		try {
 			fileHandler = new FileHandler("E:/crawler/Logger.log");

@@ -7,11 +7,7 @@ package com.jlu.yangxu.parser;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.FileHandler;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 import java.util.regex.Pattern;
-
 import org.htmlparser.Node;
 import org.htmlparser.Parser;
 import org.htmlparser.filters.NodeClassFilter;
@@ -21,11 +17,9 @@ import org.htmlparser.util.ParserException;
 
 import com.jlu.yangxu.page.FileDownLoader;
 import com.jlu.yangxu.page.PageLinkCollector;
-import com.jlu.yangxu.util.Funcs;
+import static com.jlu.yangxu.util.Funcs.logger;
 
 public class PageParser {
-
-	public static Logger logger = Funcs.getLogger();
 	private String webDomain;
 	private boolean limitDomain = true;
 	private String protocol = "http";
@@ -39,10 +33,10 @@ public class PageParser {
 		if (!checkDepth(url, depth)) {
 			return;
 		}
-		logger.info("parse : " + url + "  depth : " + depth);
-		//System.out.println("parse : " + url + "  depth : " + depth);
+		logger.info("parse seeds: " + url + "  depth : " + depth);
 
-		FileDownLoader fdl = getPageContent(url, dir);
+		FileDownLoader fdl = new FileDownLoader(url);
+		fdl.downloadFile("list",dir);
 
 		extractLinks(fdl, depth, fdl.getEncoding());
 
@@ -63,7 +57,7 @@ public class PageParser {
 	 * @throws IOException
 	 */
 	public void extractLinks(FileDownLoader fdl, Integer depth, String encoding) {
-		String nextDepth = String.valueOf(depth + 1);
+
 		try {
 			if (fdl.getContent() == null) {
 				return;
@@ -78,11 +72,8 @@ public class PageParser {
 				if (node instanceof LinkTag) {
 					LinkTag ltag = (LinkTag) node;
 					String linkHref = ltag.getLink().trim();
-
-					if (Pattern.matches("/.*?/#7BA", linkHref)) {
-						saveUrl(linkHref, nextDepth);
-					}
-
+					// processLinkHrefFor163(fdl,depth,linkHref);
+					processLinkHrefForCsdn(fdl, depth, linkHref);
 				}
 			}
 		} catch (ParserException pe) {
@@ -90,17 +81,28 @@ public class PageParser {
 		}
 	}
 
-	/**
-	 * 获得网页的内容。
-	 * 
-	 * @param url
-	 * @return 含有网页信息的类
-	 * @see FileDownLoader
-	 */
-	public FileDownLoader getPageContent(String url, String dir) {
-		FileDownLoader fdl = new FileDownLoader(url);
-		fdl.downloadFile(dir);
-		return fdl;
+	private void processLinkHrefForCsdn(FileDownLoader fdl, Integer depth,
+			String linkHref) {
+		String nextDepth = String.valueOf(depth + 1);
+		if (Pattern.matches("/.*?/index.html", linkHref)){
+				//|| Pattern.matches("/column/details/.*?.html", linkHref)
+				//|| Pattern.matches("/all/column/list.html?page=\\d*+", linkHref)) {
+			linkHref = "http://blog.csdn.net" + linkHref;
+			//System.out.println(linkHref);
+			saveUrl(linkHref, nextDepth);
+		}
+
+	}
+
+	private void processLinkHrefFor163(FileDownLoader fdl, Integer depth,
+			String linkHref) {
+		String nextDepth = String.valueOf(depth + 1);
+		if (Pattern.matches("/.*?/#7BA", linkHref)) {
+			linkHref = "http://product.mobile.163.com" + linkHref;
+			System.out.println(linkHref);
+			saveUrl(linkHref, nextDepth);
+		}
+
 	}
 
 	/**
@@ -111,7 +113,7 @@ public class PageParser {
 	 * @return 如果满足返回true，否则返回false
 	 */
 	public boolean checkDepth(String url, int depth) {
-		return depth < maxDepth;
+		return depth < Integer.MAX_VALUE;
 	}
 
 	/**
@@ -131,7 +133,6 @@ public class PageParser {
 		if (linkHref.toLowerCase().indexOf("javascript") > -1) {
 			return false;
 		}
-
 		// linkHref = removeJsessionId(linkHref);
 		// 这里只考虑抓取http协议
 		if (!linkHref.startsWith(protocol + "://")) {
@@ -160,7 +161,7 @@ public class PageParser {
 	 * @return
 	 * @throws MalformedURLException
 	 */
-	private String formatUrl(String parentLink, String link)
+	public String formatUrl(String parentLink, String link)
 			throws MalformedURLException {
 		URL parentUrl = new URL(parentLink);
 		StringBuffer res = new StringBuffer();
@@ -275,9 +276,13 @@ public class PageParser {
 	}
 
 	public static void main(String[] args) {
-		
-		//PageParser pp = new PageParser();
-		//pp.extractPage("http://product.mobile.163.com/", 0, "e:\\");
+		PageLinkCollector pc = new PageLinkCollector("test");
+
+		PageParser pp = new PageParser();
+		pp.setCollector(pc);
+		// pp.extractPage("http://blog.csdn.net/", 0, "e:\\test.html");
+		pp.extractPage("http://blog.csdn.net/all/column/list.html", 0,
+				"e:\\test.html");
 		logger.info("finished!");
 	}
 }

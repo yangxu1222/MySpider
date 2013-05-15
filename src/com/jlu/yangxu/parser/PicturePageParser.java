@@ -14,7 +14,7 @@ import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 
 import com.jlu.yangxu.page.FileDownLoader;
-
+import static com.jlu.yangxu.util.Funcs.logger;
 public class PicturePageParser extends PageParser {
 	public PicturePageParser(){
 		super();
@@ -28,7 +28,8 @@ public class PicturePageParser extends PageParser {
 	public void extractPage(String url, Integer depth,String dir) {
 		logger.info("parse : " + url + "  depth : " + depth);
 		String mobileBrand = "/"+url.split("/")[3]+"/"+url.split("/")[4];
-		FileDownLoader fdl = getPageContent(url,dir);		
+		FileDownLoader fdl = new FileDownLoader(url);
+		fdl.downloadFile("detail",dir);	
 		extractLinks(fdl, depth, fdl.getEncoding(),mobileBrand);
 	}
 	
@@ -59,8 +60,6 @@ public class PicturePageParser extends PageParser {
 				if (node instanceof LinkTag) {
 					LinkTag ltag = (LinkTag) node;
 					String linkHref = ltag.getLink().trim();
-
-
 					try {
 	
 						if (linkHref == "img.html#8B3"){
