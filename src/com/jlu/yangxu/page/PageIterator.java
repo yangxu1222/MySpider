@@ -2,16 +2,16 @@
  *@author 杨旭，创建日期:2013-5-7
  *
  */
-package com.jlu.yangxu.newsspider.page;
+package com.jlu.yangxu.page;
 
 import java.util.regex.Pattern;
 
-import com.jlu.yangxu.newsspider.parser.BrandIndexPageParser;
-import com.jlu.yangxu.newsspider.parser.DetailPageParser;
-import com.jlu.yangxu.newsspider.parser.ListPageParser;
-import com.jlu.yangxu.newsspider.parser.PageParser;
-import com.jlu.yangxu.newsspider.parser.PicturePageParser;
-import com.jlu.yangxu.newsspider.util.ConfigUtil;
+import com.jlu.yangxu.parser.BrandIndexPageParser;
+import com.jlu.yangxu.parser.DetailPageParser;
+import com.jlu.yangxu.parser.ListPageParser;
+import com.jlu.yangxu.parser.PageParser;
+import com.jlu.yangxu.parser.PicturePageParser;
+import com.jlu.yangxu.util.ConfigUtil;
 
 public class PageIterator implements Runnable {
 	private PageLinkCollector collector;

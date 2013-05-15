@@ -2,7 +2,7 @@
  *@author 杨旭，创建日期:2013-5-7
  *
  */
-package com.jlu.yangxu.newsspider.page;
+package com.jlu.yangxu.page;
 
 import static net.mindview.util.Print.*;
 
@@ -24,13 +24,14 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.params.DefaultHttpParams;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
-import com.jlu.yangxu.newsspider.util.ConfigUtil;
-import com.jlu.yangxu.newsspider.util.URLUtil;
+import com.jlu.yangxu.util.ConfigUtil;
+import com.jlu.yangxu.util.Funcs;
+import com.jlu.yangxu.util.URLUtil;
 
 
 public class FileDownLoader {
 	
-	private static Logger logger = Logger.getLogger(FileDownLoader.class.getName());
+	public static Logger logger = Funcs.getLogger();
 	private String url;
 
 	private String fileName;
@@ -40,14 +41,6 @@ public class FileDownLoader {
 	private String content = null;
 	private static long count = 0;
 	public FileDownLoader(String url) {
-		try {
-			FileHandler fileHandler = new FileHandler("E:/crawler/Logger.log");
-			fileHandler.setFormatter(new SimpleFormatter());
-			logger.addHandler(fileHandler);
-		} catch (SecurityException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		this.url = url;
 	}
 
@@ -59,18 +52,11 @@ public class FileDownLoader {
 	 *            网页类型
 	 * @return
 	 */
-	public String getFileNameByUrl(String url, String contentType) {
-		url = url.substring(7);// remove http://
-		if (contentType.indexOf("html") != -1) {// text/html
+	public String getFileNameByUrl(String url) {
+		url = url.substring(30);// remove http://
 			//url = url.replaceAll("[\\?/:*|<>\"]", "_")+".html" ;
-			url = url.replaceAll("[\\?/:*|<>\"]", "_")+".html" ;
-			return url;
-		} else {// 如application/pdf 不是html文件
-			return url.replaceAll("[\\?/:*|<>\"]", "_")
-					+ "."
-					+ contentType.substring(contentType.lastIndexOf("/") + 1,
-							contentType.indexOf(";"));
-		}
+		url = url.replaceAll("/", "_");
+		return url;
 	}
 
 	/**
@@ -344,5 +330,12 @@ public class FileDownLoader {
 	public void setContent(String content) {
 		this.content = content;
 	}
+	public static void main(String[] args){
+		String url = "http://product.mobile.163.com/Samsung/9.html#result";
+		String url2 = "http://product.mobile.163.com/Samsung/000BCcIW/param.html#8B2";
+		String url3 = "http://product.mobile.163.com/acer/#7BA";
+		FileDownLoader loader = new FileDownLoader(url2);
+		print(loader.getFileNameByUrl(url2));
 
+	}
 }

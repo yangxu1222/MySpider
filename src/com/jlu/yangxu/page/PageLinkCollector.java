@@ -2,15 +2,18 @@
  *@author 杨旭，创建日期:2013-5-6
  *
  */
-package com.jlu.yangxu.newsspider.page;
+package com.jlu.yangxu.page;
 
 import java.io.UnsupportedEncodingException;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import com.jlu.yangxu.newsspider.db.BerkeleyDBDao;
+import com.jlu.yangxu.db.BerkeleyDBDao;
+import com.jlu.yangxu.util.Funcs;
 import com.sleepycat.je.DatabaseException;
 
 public class PageLinkCollector {
+	public static Logger logger = Funcs.getLogger();
 	private BerkeleyDBDao dao = new BerkeleyDBDao();
 	private String toDealDBName;
 	private String dealedDBName;
@@ -34,6 +37,7 @@ public class PageLinkCollector {
 	public synchronized void add(String key, String data) {
 
 		key = "http://product.mobile.163.com" + key;
+		logger.info("toDeal:" + key);
 		// if (key.contains("#B21") || Pattern.matches("./\\d*?.html#result",
 		// key)) {
 
@@ -63,7 +67,10 @@ public class PageLinkCollector {
 	 * @param data
 	 */
 	public synchronized void addToDealLink(String key, String data) {
+		key = "http://product.mobile.163.com" + key;
+		logger.info("toDeal:" + key);
 		try {
+			
 			// 如果此连接不在待处理连接数据库中，同时也不在已处理数据库中 则加入到待处理数据库中
 			if (!dao.isRecordExist(toDealDBName, key, data)
 					&& !dao.isRecordExist(dealedDBName, key, data)) {
@@ -93,6 +100,7 @@ public class PageLinkCollector {
 			e.printStackTrace();
 		}
 		// System.out.println("save to dealed DB :" +key);
+		logger.info("to dealed:"+key);
 	}
 
 	/***

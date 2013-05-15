@@ -2,7 +2,7 @@
  *@author 杨旭，创建日期:2013-5-10
  *
 */
-package com.jlu.yangxu.newsspider.page;
+package com.jlu.yangxu.page;
 
 import static net.mindview.util.Print.print;
 
@@ -19,14 +19,17 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
 import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGImageEncoder;
-import com.jlu.yangxu.newsspider.util.ConfigUtil;
+import com.jlu.yangxu.util.ConfigUtil;
+import com.jlu.yangxu.util.Funcs;
 
 public class PictureDownloader {
+	public static Logger logger = Funcs.getLogger();
 	private String inUrl;
 
 	private String fileName;
@@ -68,7 +71,7 @@ public class PictureDownloader {
 	 * @return
 	 */
 	public void downloadFile(String saveName) {
-		print("downloading picture..." + saveName);
+		logger.info("download picture" + saveName);
 		try {
 			URL url = new URL(inUrl);
 			Image src = ImageIO.read(url);

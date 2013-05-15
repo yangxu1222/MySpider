@@ -2,7 +2,7 @@
  *@author 杨旭，创建日期:2013-5-10
  *
 */
-package com.jlu.yangxu.newsspider.parser;
+package com.jlu.yangxu.parser;
 
 import java.io.IOException;
 
@@ -13,7 +13,7 @@ import org.htmlparser.tags.LinkTag;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 
-import com.jlu.yangxu.newsspider.page.FileDownLoader;
+import com.jlu.yangxu.page.FileDownLoader;
 
 public class PicturePageParser extends PageParser {
 	public PicturePageParser(){

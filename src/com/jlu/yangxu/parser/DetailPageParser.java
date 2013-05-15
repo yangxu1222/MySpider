@@ -2,7 +2,7 @@
  *@author 杨旭，创建日期:2013-5-7
  *
  */
-package com.jlu.yangxu.newsspider.parser;
+package com.jlu.yangxu.parser;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
@@ -15,9 +15,9 @@ import org.htmlparser.tags.LinkTag;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 
-import com.jlu.yangxu.newsspider.page.FileDownLoader;
-import com.jlu.yangxu.newsspider.page.PictureDownloader;
-import com.jlu.yangxu.newsspider.util.ConfigUtil;
+import com.jlu.yangxu.page.FileDownLoader;
+import com.jlu.yangxu.page.PictureDownloader;
+import com.jlu.yangxu.util.ConfigUtil;
 
 public class DetailPageParser extends PageParser {
 	public DetailPageParser() {
@@ -66,7 +66,6 @@ public class DetailPageParser extends PageParser {
 					String[] subsUrl = fdl.getUrl().split("/");
 					String mobileBrandName = subsUrl[3];
 					String mobileBrandType = subsUrl[4];
-					//System.out.println(linkHref);
 					if (linkHref.contains("#8B1_")) {
 						Node child = ltag.getLastChild();
 						if(child instanceof ImageTag){
@@ -79,7 +78,6 @@ public class DetailPageParser extends PageParser {
 					}
 					if(linkHref.contains("param.html#8B2")){
 						linkHref = "http://product.mobile.163.com" +"/" + mobileBrandName +"/" + mobileBrandType +"/" + linkHref;
-
 						String fileName = mobileBrandName+"_"+mobileBrandType;
 						String dir = ConfigUtil.getProperty("CACHE_PRAMA_PATH");
 						FileDownLoader fileDownLoader = new FileDownLoader(linkHref);

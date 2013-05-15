@@ -2,11 +2,17 @@
  *@author 杨旭，创建日期:2013-5-7
  *
 */
-package com.jlu.yangxu.newsspider.util;
+package com.jlu.yangxu.util;
 
 import java.io.*;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+
+import com.jlu.yangxu.Spider;
 
 public class Funcs {
+	
 	/**
 	 * 将InputStream 转化为String
 	 * @param in
@@ -29,6 +35,27 @@ public class Funcs {
 		}
 		return sb.toString();
 	}
+	
+	/**
+	 * 获取整个工程的logger
+	 * @param args
+	 * @throws IOException
+	 */
+	public static Logger getLogger(){
+		Logger logger = Logger.getLogger(Spider.class.getName());
+		FileHandler fileHandler;
+		try {
+			fileHandler = new FileHandler("E:/crawler/Logger.log");
+			fileHandler.setFormatter(new SimpleFormatter());
+			logger.addHandler(fileHandler);
+		} catch (SecurityException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return logger;
+		
+	}
+	
 	public static void main(String[] args) throws IOException {
 		InputStream in = new FileInputStream(new File("f:\\seed.txt"));
 		System.out.println(getContent(in));

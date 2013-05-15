@@ -2,12 +2,12 @@
  *@author 杨旭，创建日期:2013-5-5
  *
 */
-package com.jlu.yangxu.newsspider.db;
+package com.jlu.yangxu.db;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 
-import com.jlu.yangxu.newsspider.util.ConfigUtil;
+import com.jlu.yangxu.util.ConfigUtil;
 import com.sleepycat.je.Cursor;
 import com.sleepycat.je.Database;
 import com.sleepycat.je.DatabaseConfig;

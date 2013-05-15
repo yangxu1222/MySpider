@@ -2,7 +2,7 @@
  *@author 杨旭，创建日期:2013-5-5
  *
  */
-package com.jlu.yangxu.newsspider.util;
+package com.jlu.yangxu.util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,7 +13,7 @@ public class ConfigUtil {
 	static {
 		InputStream in = null;
 		try {
-			in = ConfigUtil.class.getResourceAsStream("/com/jlu/yangxu/newsspider/config/crawler.properties");
+			in = ConfigUtil.class.getResourceAsStream("/com/jlu/yangxu/config/crawler.properties");
 			properties = new Properties();
 			properties.load(in);
 		} catch (IOException ioe) {

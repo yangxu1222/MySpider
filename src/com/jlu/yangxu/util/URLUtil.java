@@ -1,4 +1,4 @@
-package com.jlu.yangxu.newsspider.util;
+package com.jlu.yangxu.util;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

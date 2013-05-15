@@ -2,7 +2,7 @@
  *@author 杨旭，创建日期:2013-5-7
  *
  */
-package com.jlu.yangxu.newsspider.parser;
+package com.jlu.yangxu.parser;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
@@ -14,7 +14,7 @@ import org.htmlparser.tags.LinkTag;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 
-import com.jlu.yangxu.newsspider.page.FileDownLoader;
+import com.jlu.yangxu.page.FileDownLoader;
 
 public class ListPageParser extends PageParser {
 	public ListPageParser() {
@@ -69,6 +69,7 @@ public class ListPageParser extends PageParser {
 						if (Pattern.matches("./\\d*?.html#result", linkHref)) {
 							linkHref = linkHref.substring(1);
 							linkHref = mobileBrandName + linkHref;
+							saveUrl(linkHref, nextDepth);
 						}
 						 saveUrl(linkHref, nextDepth);
 					}

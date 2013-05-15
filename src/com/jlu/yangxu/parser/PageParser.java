@@ -2,7 +2,7 @@
  *@author 杨旭，创建日期:2013-5-6
  *
  */
-package com.jlu.yangxu.newsspider.parser;
+package com.jlu.yangxu.parser;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -19,12 +19,13 @@ import org.htmlparser.tags.LinkTag;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 
-import com.jlu.yangxu.newsspider.page.FileDownLoader;
-import com.jlu.yangxu.newsspider.page.PageLinkCollector;
+import com.jlu.yangxu.page.FileDownLoader;
+import com.jlu.yangxu.page.PageLinkCollector;
+import com.jlu.yangxu.util.Funcs;
 
 public class PageParser {
 
-	public static Logger logger = Logger.getLogger(PageParser.class.getName());
+	public static Logger logger = Funcs.getLogger();
 	private String webDomain;
 	private boolean limitDomain = true;
 	private String protocol = "http";
@@ -32,24 +33,14 @@ public class PageParser {
 	private Integer maxDepth;
 
 	public PageParser() {
-		try {
-			FileHandler fileHandler = new FileHandler("E:/crawler/Logger.log");
-			fileHandler.setFormatter(new SimpleFormatter());
-			logger.addHandler(fileHandler);
-		} catch (SecurityException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-
 	}
 
 	public void extractPage(String url, Integer depth, String dir) {
-	//	if (!checkDepth(url, depth)) {
-	//		return;
-	//	}
+		if (!checkDepth(url, depth)) {
+			return;
+		}
 		logger.info("parse : " + url + "  depth : " + depth);
-		System.out.println("parse : " + url + "  depth : " + depth);
+		//System.out.println("parse : " + url + "  depth : " + depth);
 
 		FileDownLoader fdl = getPageContent(url, dir);
 
@@ -218,7 +209,7 @@ public class PageParser {
 	 * @param nextDepth
 	 */
 	protected void saveUrl(String linkHref, String nextDepth) {
-		collector.add(linkHref, nextDepth);
+		collector.addToDealLink(linkHref, nextDepth);
 	}
 
 	/**
@@ -284,8 +275,9 @@ public class PageParser {
 	}
 
 	public static void main(String[] args) {
-		PageParser pp = new PageParser();
-		pp.extractPage("http://product.mobile.163.com/", 0, "e:\\");
+		
+		//PageParser pp = new PageParser();
+		//pp.extractPage("http://product.mobile.163.com/", 0, "e:\\");
 		logger.info("finished!");
 	}
 }
