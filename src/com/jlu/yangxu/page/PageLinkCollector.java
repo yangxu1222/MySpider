@@ -30,8 +30,7 @@ public class PageLinkCollector {
 	 * @param key
 	 * @param data
 	 */
-	public synchronized void addToDealLink(String key, String data) {		
-		
+	public synchronized void addToDealLink(String key, String data) {			
 		try {		
 			// 如果此连接不在待处理连接数据库中，同时也不在已处理数据库中 则加入到待处理数据库中
 			if (!dao.isRecordExist(toDealDBName, key, data)
@@ -64,7 +63,7 @@ public class PageLinkCollector {
 			e.printStackTrace();
 		}
 		// System.out.println("save to dealed DB :" +key);
-		logger.info("to dealed:"+key);
+		//logger.info("to dealed:"+key);
 	}
 
 	/***
@@ -79,8 +78,7 @@ public class PageLinkCollector {
 				dao.delete(toDealDBName, result[0]);
 				dao.saveUrl(dealedDBName, result[0], result[1]);
 				logger.info("getNextUrl:" + result[0]);
-			}
-			
+			}		
 			return result;
 		} catch (UnsupportedEncodingException | DatabaseException e) {
 			e.printStackTrace();
@@ -94,7 +92,6 @@ public class PageLinkCollector {
 			dao.removeDatabase(dealedDBName);
 			dao.clearLog();
 		} catch (DatabaseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

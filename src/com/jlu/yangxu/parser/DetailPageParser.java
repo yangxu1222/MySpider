@@ -33,9 +33,10 @@ public class DetailPageParser extends PageParser {
 	 * @throws IOException
 	 */
 	public void extractPage(String url, Integer depth, String dir) {
-		logger.info("parse detailPage: " + url + "  depth : " + depth);
+		
 		FileDownLoader fdl = new FileDownLoader(url);
 		fdl.downloadFile("detail",dir);
+		
 		extractLinks(fdl, depth, fdl.getEncoding());
 		collector.addDealedLink(url, String.valueOf(depth));
 		fdl = null;
@@ -53,6 +54,7 @@ public class DetailPageParser extends PageParser {
 	 * @throws IOException
 	 */
 	public void extractLinks(FileDownLoader fdl, Integer depth, String encoding) {
+		logger.info("extractor detailPage: " + fdl.getUrl() + "  depth : " + depth);
 		try {
 			if (fdl.getContent() == null) {
 				return;

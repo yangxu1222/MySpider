@@ -59,6 +59,7 @@ public class Crawler4Csdn extends Crawler {
 				e.printStackTrace();
 			}			
 		}
+
 		collector.clear();
 		collector = null;
 		

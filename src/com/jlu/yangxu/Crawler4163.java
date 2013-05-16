@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.jlu.yangxu.page.PageIterator;
 import com.jlu.yangxu.page.PageIterator4163;
 import com.jlu.yangxu.page.PageLinkCollector;
 import com.jlu.yangxu.parser.BrandIndexPageParser;

@@ -5,6 +5,9 @@
 package com.jlu.yangxu.parser;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.htmlparser.Node;
@@ -15,7 +18,9 @@ import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 
 import com.jlu.yangxu.page.FileDownLoader;
+
 import static com.jlu.yangxu.util.Funcs.logger;
+
 public class ListPageParser extends PageParser {
 	public ListPageParser() {
 		super();
@@ -27,14 +32,14 @@ public class ListPageParser extends PageParser {
 	 * @throws IOException
 	 */
 	public void extractPage(String url, Integer depth, String dir) {
-		if (!checkDepth(url, depth)) {
-			return;
-		}
-		logger.info("parse listPage: " + url + "  depth : " + depth);
+		// if (!checkDepth(url, depth)) {
+		// return;
+		// }
+		 
 		FileDownLoader fdl = new FileDownLoader(url);
-		fdl.downloadFile("list",dir);
+		fdl.downloadFile("list", dir);
 		extractLinks(fdl, depth, fdl.getEncoding());
-		collector.addDealedLink(url, String.valueOf(depth));
+		// collector.addDealedLink(url, String.valueOf(depth));
 		fdl = null;
 	}
 
@@ -50,7 +55,8 @@ public class ListPageParser extends PageParser {
 	 * @throws IOException
 	 */
 	public void extractLinks(FileDownLoader fdl, Integer depth, String encoding) {
-
+		logger.info("extractor listPage: " + fdl.getUrl() + "  depth : " + depth);
+		
 		try {
 			if (fdl.getContent() == null) {
 				return;
@@ -65,31 +71,36 @@ public class ListPageParser extends PageParser {
 				if (node instanceof LinkTag) {
 					LinkTag ltag = (LinkTag) node;
 					String linkHref = ltag.getLink().trim();
-					//processLinkHrefFor163(fdl, depth, linkHref);
-					processLinkHrefForCsdn(fdl, depth, linkHref);
+					// processLinkHrefFor163(fdl, depth, linkHref);
+					 processLinkHrefForCsdn(fdl, depth, linkHref);			
 				}
 			}
+			
 		} catch (ParserException pe) {
 			pe.printStackTrace();
 		}
 	}
+
 	private void processLinkHrefForCsdn(FileDownLoader fdl, Integer depth,
-			String linkHref){
+			String linkHref) {
+
 		String nextDepth = String.valueOf(depth + 1);
-		if(Pattern.matches("http://blog.csdn.net/.*?/article/details/\\d*+", linkHref)
-				||Pattern.matches("/.*?/index.html\\?page=\\d*+", linkHref)
-				||Pattern.matches("http://blog.csdn.net/.*?/article/category/\\d*+", linkHref)){
-			if(Pattern.matches("/.*?/index.html\\?page=\\d*+", linkHref)){
-				linkHref = "http://blog.csdn.net"+linkHref;
+		if (Pattern.matches("http://blog.csdn.net/.*?/article/details/\\d*+",
+				linkHref)
+				|| Pattern.matches("/.*?/index.html\\?page=\\d*+", linkHref)
+				|| Pattern.matches(
+						"http://blog.csdn.net/.*?/article/category/\\d*+",
+						linkHref)) {
+			if (Pattern.matches("/.*?/index.html\\?page=\\d*+", linkHref)) {
+				linkHref = "http://blog.csdn.net" + linkHref;
+				saveUrl(linkHref,nextDepth);
 			}
-			//System.out.println(linkHref);
+			// logger.info("process " + linkHref);
 			saveUrl(linkHref, nextDepth);
 		}
-		
+
 	}
-	
-	
-	
+
 	private void processLinkHrefFor163(FileDownLoader fdl, Integer depth,
 			String linkHref) {
 		String url = fdl.getUrl();
@@ -102,10 +113,10 @@ public class ListPageParser extends PageParser {
 				linkHref = linkHref.substring(1);
 				linkHref = mobileBrandName + linkHref;
 				linkHref = "http://product.mobile.163.com" + linkHref;
-				//System.out.println(linkHref);
+				// System.out.println(linkHref);
 				saveUrl(linkHref, nextDepth);
 			}
-			//System.out.println(linkHref);
+			// System.out.println(linkHref);
 			linkHref = "http://product.mobile.163.com" + linkHref;
 			saveUrl(linkHref, nextDepth);
 		}
@@ -120,7 +131,7 @@ public class ListPageParser extends PageParser {
 
 	public static void main(String[] args) {
 		ListPageParser parser = new ListPageParser();
-		String url = "http://blog.csdn.net/lance_yan/article/details/8924350";
+		String url = "http://blog.csdn.net/jjfat/";
 		String url2 = "http://product.mobile.163.com/BlackBerry/#7BA";
 		Integer depth = 0;
 		String dir = "e:\\test";

@@ -7,7 +7,10 @@ package com.jlu.yangxu.page;
 import static net.mindview.util.Print.*;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
@@ -125,14 +128,16 @@ public class FileDownLoader {
 			responseBody = getMethod.getResponseBodyAsStream();// 读取为字节数组
 			String fileName = String.valueOf(count++);
 			filePath = dir + fileName;
+			
+			
 			String charset = getMethod.getResponseCharSet();
 
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
 					responseBody, charset));
 			OutputStreamWriter writer = new OutputStreamWriter(
 					new FileOutputStream(new File(filePath)), charset);
-			StringBuilder sb = new StringBuilder();//
 			
+			StringBuilder sb = new StringBuilder();//		
 			String line;
 			while ((line = reader.readLine()) != null) {
 				writer.append(line + "\n");
@@ -161,13 +166,15 @@ public class FileDownLoader {
 		return filePath;
 	}
 	
+	
+
 	/**
 	 * 下载 url 指向的网页
 	 * 
 	 * @return
 	 */
-	public String downloadFile(String fileName,String dir) {
-		logger.info("downloading..." + url);
+	public synchronized String downloadFile(String fileName,String dir) {
+		
 		String filePath = null;
 		InputStream responseBody;
 		
@@ -217,11 +224,14 @@ public class FileDownLoader {
 			//只下载html文件 不是html文件 则直接返回
 			if (getMethod.getResponseHeader("Content-Type").getValue().indexOf("html") == -1){
 				this.setContent(content);
-				return null;
-				
+				return null;			
 			}
 			/* 4.处理 HTTP 响应内容 */
 			responseBody = getMethod.getResponseBodyAsStream();// 读取为字节数组
+			String charset = getMethod.getResponseCharSet();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					responseBody, charset));
+			
 			if(fileName=="detail"){
 				filePath = dir + fileName + detailCount;
 				detailCount++;
@@ -229,18 +239,15 @@ public class FileDownLoader {
 			if(fileName == "list"){
 				filePath = dir + fileName + listCount;
 				listCount++;
-			}
-			
-			
-			String charset = getMethod.getResponseCharSet();
-
-			// saveToLocal(responseBody, filePath);//暂时不保存临时文件
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					responseBody, charset));
+			}								
 			OutputStreamWriter writer = new OutputStreamWriter(
 					new FileOutputStream(new File(filePath)), charset);
-			StringBuilder sb = new StringBuilder();//
 			
+			writer.append(url + "\n");	
+			String time = getTime();
+			writer.append(time+"\n");
+			
+			StringBuilder sb = new StringBuilder();//		
 			String line;
 			while ((line = reader.readLine()) != null) {
 				writer.append(line + "\n");
@@ -250,8 +257,8 @@ public class FileDownLoader {
 			writer.flush();
 			writer.close();
 			reader.close();
+			logger.info("downloaded: " + url);
 			this.setFileName(fileName);
-			// this.setEncoding(getCharset(responseBody, getMethod));
 			this.setEncoding(charset);
 			this.setContent(content);
 			
@@ -269,7 +276,43 @@ public class FileDownLoader {
 		return filePath;
 	}
 	
+	private String getTime() {
+		StringBuilder sb = new StringBuilder();
+		SimpleDateFormat formatter = new SimpleDateFormat(
+				"yyyy年MM月dd日 HH:mm:ss");
+		Calendar cal = Calendar.getInstance(); // 创建一个日历对象。
+		sb.append(formatter.format(cal.getTime()));
+		String weekday = convert(cal.get(Calendar.DAY_OF_WEEK));
+		sb.append(" " + weekday);
+		//System.out.println(sb.toString());		
+		return sb.toString();
+	}
 
+	private String convert(int val) {
+		String retStr = "";
+		switch (val) {
+		case 0:
+			return "星期日";
+		case 1:
+			return "星期一";
+		case 2:
+			return "星期二";
+		case 3:
+			return "星期三";
+		case 4:
+			return "星期四";
+		case 5:
+			return "星期五";
+		case 6:
+			return "星期六";
+		default:
+			break;
+		}
+		return retStr;
+
+	}
+	
+	
 	/*
 	 * /** 获得字符集
 	 * 
@@ -328,11 +371,13 @@ public class FileDownLoader {
 		this.content = content;
 	}
 	public static void main(String[] args){
-		String url = "http://product.mobile.163.com/Samsung/9.html#result";
+		String url = "http://blog.csdn.net/jjfat/article/category/1286691";
 		String url2 = "http://product.mobile.163.com/Samsung/000BCcIW/param.html#8B2";
 		String url3 = "http://product.mobile.163.com/acer/#7BA";
-		FileDownLoader loader = new FileDownLoader(url2);
-		print(loader.getFileNameByUrl(url2));
+		FileDownLoader loader = new FileDownLoader(url);
+		loader.downloadFile("detail", "e:\\");
+		System.out.println("finished");
+		//print(loader.getFileNameByUrl(url2));
 
 	}
 }

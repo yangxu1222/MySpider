@@ -12,7 +12,7 @@ import com.jlu.yangxu.parser.PageParser;
 import com.jlu.yangxu.parser.PicturePageParser;
 import com.jlu.yangxu.util.ConfigUtil;
 
-public class PageIterator4163 implements PageIterator, Runnable{
+public class PageIterator4163 implements  Runnable{
 
 	private PageLinkCollector collector;
 

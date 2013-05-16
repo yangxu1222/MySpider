@@ -34,10 +34,10 @@ public class BrandIndexPageParser extends PageParser {
 	 * @throws IOException
 	 */
 	public void extractPage(String url, Integer depth, String dir) {
-		if (!checkDepth(url, depth)) {
-			return;
-		}
-		logger.info("parse BrandPage: " + url + "  depth : " + depth);
+		//if (!checkDepth(url, depth)) {
+	//		return;
+	//	}
+		
 		FileDownLoader fdl = new FileDownLoader(url);
 		fdl.downloadFile("list",dir);
 		extractLinks(fdl, depth, fdl.getEncoding());
@@ -57,6 +57,7 @@ public class BrandIndexPageParser extends PageParser {
 	 * @throws IOException
 	 */
 	public void extractLinks(FileDownLoader fdl, Integer depth, String encoding) {
+		logger.info("extractor BrandPage: " + fdl.getUrl() + "  depth : " + depth);
 		try {
 			if (fdl.getContent() == null) {
 				return;

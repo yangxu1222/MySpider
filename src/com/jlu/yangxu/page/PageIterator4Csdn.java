@@ -12,7 +12,7 @@ import com.jlu.yangxu.parser.PageParser;
 import com.jlu.yangxu.parser.PicturePageParser;
 import com.jlu.yangxu.util.ConfigUtil;
 
-public class PageIterator4Csdn implements PageIterator, Runnable {
+public class PageIterator4Csdn implements Runnable {
 
 	private PageLinkCollector collector;
 
@@ -48,7 +48,7 @@ public class PageIterator4Csdn implements PageIterator, Runnable {
 		this.biparser = biparser;
 	}
 
-	@Override
+
 	public void run() {
 		String[] toDealLink = null;//[url,depth]
 		while ((toDealLink = collector.getNextToDeal()) != null) {

@@ -30,10 +30,10 @@ public class PageParser {
 	}
 
 	public void extractPage(String url, Integer depth, String dir) {
-		if (!checkDepth(url, depth)) {
-			return;
-		}
-		logger.info("parse seeds: " + url + "  depth : " + depth);
+	//	if (!checkDepth(url, depth)) {
+	//		return;
+	//	}
+		
 
 		FileDownLoader fdl = new FileDownLoader(url);
 		fdl.downloadFile("list",dir);
@@ -57,7 +57,7 @@ public class PageParser {
 	 * @throws IOException
 	 */
 	public void extractLinks(FileDownLoader fdl, Integer depth, String encoding) {
-
+		logger.info("extractor seeds: " + fdl.getUrl() + "  depth : " + depth);
 		try {
 			if (fdl.getContent() == null) {
 				return;
